@@ -20,7 +20,8 @@ extension EnvironmentValues {
     /// > given dependency model, a `fatal error` will occur.
     ///
     /// - Returns: The resolved dependency or its defaultValue
-    @inlinable public func resolve<V: Dependency>() -> V {
+    @inlinable 
+    public func resolve<V: Dependency>() -> V {
         guard let value = self[V.Key.self] as? V else {
             fatalError("Failed to resolve \(V.self)")
         }
@@ -37,12 +38,14 @@ extension EnvironmentValues {
     /// ```
     ///
     /// - Returns: The resolved dependency or its defaultValue
-    @inlinable public func resolve<V: Dependency>(withDefault value: @autoclosure @escaping (() -> V)) -> V {
+    @inlinable
+    public func resolve<V: Dependency>(
+        withDefault value: @autoclosure @escaping (() -> V)
+    ) -> V {
         V.Key._resolve = value
         guard let value = self[V.Key.self] as? V else {
             fatalError("Failed to resolve \(V.self)")
         }
         return value
     }
-    
 }
