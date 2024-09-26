@@ -9,7 +9,7 @@ import XCTest
 import InjectorMacros
 
 let testMacros: [String: Macro.Type] = [
-    "stringify": StringifyMacro.self,
+    "Dependency": DependencyMacro.self,
 ]
 #endif
 
@@ -18,10 +18,23 @@ final class InjectorTests: XCTestCase {
         #if canImport(InjectorMacros)
         assertMacroExpansion(
             """
-            #stringify(a + b)
+            @Dependency
+            class MyDependency {
+                var someValue: Bool = false
+            }
             """,
             expandedSource: """
-            (a + b, "a + b")
+            class MyDependency {
+                var someValue: Bool = false
+            
+                struct MyDependencyKey : EnvironmentKey {
+                    static let defaultValue = MyDependency.defaultValue
+                }
+                    typealias Key = MyDependencyKey
+            }
+            
+            extension MyDependency : Dependency {
+            }
             """,
             macros: testMacros
         )
@@ -30,19 +43,19 @@ final class InjectorTests: XCTestCase {
         #endif
     }
 
-    func testMacroWithStringLiteral() throws {
-        #if canImport(InjectorMacros)
-        assertMacroExpansion(
-            #"""
-            #stringify("Hello, \(name)")
-            """#,
-            expandedSource: #"""
-            ("Hello, \(name)", #""Hello, \(name)""#)
-            """#,
-            macros: testMacros
-        )
-        #else
-        throw XCTSkip("macros are only supported when running tests for the host platform")
-        #endif
-    }
+//    func testMacroWithStringLiteral() throws {
+//        #if canImport(InjectorMacros)
+//        assertMacroExpansion(
+//            #"""
+//            #stringify("Hello, \(name)")
+//            """#,
+//            expandedSource: #"""
+//            ("Hello, \(name)", #""Hello, \(name)""#)
+//            """#,
+//            macros: testMacros
+//        )
+//        #else
+//        throw XCTSkip("macros are only supported when running tests for the host platform")
+//        #endif
+//    }
 }
