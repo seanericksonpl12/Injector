@@ -7,3 +7,4 @@
 import SwiftUI
 public typealias EnvironmentKey = SwiftUI.EnvironmentKey
 public typealias EnvironmentValues = SwiftUI.EnvironmentValues
+public typealias Dependencies = SwiftUI.EnvironmentValues

@@ -6,13 +6,14 @@
 //
 
 public protocol Dependency {
-    associatedtype Key: EnvironmentKey
-    static var defaultValue: Self { get }
+    associatedtype Key: EnvironmentKey, Resolvable
+    static var defaultValue: (any Dependency) { get }
 }
 
 public extension Dependency {
-    static var defaultValue: Self {
-        fatalError("Dependecy \"\(self)\" not resolved!\n\nTo fix this, either:\n     1.) Implement a default value in your \(self) class via `static let defaultValue = \(self)(...)`\n     2.) Use `resolve(withDependency: \(self)(...))` in your EnvironmentValues extension")
-    }
+    static var defaultValue: (any Dependency) { Key._resolve() }
 }
 
+public protocol Resolvable {
+    static var _resolve: (() -> any Dependency) { get set }
+}
