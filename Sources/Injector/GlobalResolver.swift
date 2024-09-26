@@ -18,7 +18,7 @@ public class GlobalResolver {
     internal var resolvers: [AnyKeyPath: InstanceResolver] = [:]
     
     @inlinable
-    public static func inject<Value>(
+    public static func inject<Value: Dependency>(
         _ keyPath: KeyPath<EnvironmentValues, Value>,
         _ value: @autoclosure @escaping () -> Value
     ) {

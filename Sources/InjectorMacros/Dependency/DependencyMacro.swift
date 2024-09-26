@@ -36,7 +36,10 @@ extension DependencyMacro: MemberMacro {
         if let nameDecl = declaration as? NamedDeclSyntax {
             let keyName = nameDecl.name.text + "Key"
             return ["""
-            struct \(raw: keyName): EnvironmentKey { static let defaultValue = \(nameDecl.name.trimmed).defaultValue }
+            struct \(raw: keyName): EnvironmentKey, Resolvable {
+                static let defaultValue = \(nameDecl.name.trimmed).defaultValue
+                static var _resolve: (() -> any Dependency) = { fatalError() }
+            }
         typealias Key = \(raw: keyName)
         """]
         } else {
