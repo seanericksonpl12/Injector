@@ -5,19 +5,23 @@
 //  Created by Sean Erickson on 9/25/24.
 //
 
-public protocol InstanceResolver {
+@usableFromInline
+protocol InstanceResolver {
     func resolve<Value>(for type: Value.Type) -> Value?
 }
 
+@usableFromInline
 final class SingletonInstanceResolver<Value>: InstanceResolver {
     
     private(set) var instance: Value?
     private var resolveAction: (() -> Value)?
     
-    @inlinable init(resolver: @escaping () -> Value) {
+    @usableFromInline
+    init(resolver: @escaping () -> Value) {
         self.resolveAction = resolver
     }
     
+    @usableFromInline
     func resolve<V>(for type: V.Type) -> V? {
         guard let instance else {
             let resolveAction = self.resolveAction!
